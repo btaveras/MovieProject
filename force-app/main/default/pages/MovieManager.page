@@ -1,0 +1,2 @@
+<apex:page controller="MovieIntegration" action="{!findMovie}">
+</apex:page>
