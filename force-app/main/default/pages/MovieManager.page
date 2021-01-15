@@ -1,2 +1,30 @@
-<apex:page controller="MovieIntegration" action="{!findMovie}">
+<apex:page controller="MovieIntegration" cache="false" action="{!findMovie}">
+    <apex:form >
+        <apex:pageBlock title="Movie Details To Search">
+            <apex:pageblockSection >
+                <apex:inputText value="{!MovieTitle}" />
+            </apex:pageblockSection>
+            <apex:pageblockButtons location="bottom">
+                <apex:commandButton value="Search" action="{!findMovie}" rerender="details"/>
+            </apex:pageblockButtons>
+        </apex:pageBlock>
+        <apex:pageBlock title="Movie Details" id="noRec" rendered="{! IF( movieList != null && movieList.size ==0 , true, false)}" >
+            <apex:outputPanel >
+                <h1>No Records Found </h1>
+            </apex:outputPanel>
+        </apex:pageBlock>
+        <apex:pageBlock title="Movie Details" id="details">
+            <apex:pageBlockTable value="{!movieList}" var="m">
+                <apex:column value="{!m.original_title}" headerValue="Title"/>
+                <apex:column value="{!m.vote_average}" headerValue="Rating"/>
+                <apex:column value="{!m.release_date}" headerValue="Release Date"/>
+            </apex:pageBlockTable>
+            <apex:pageblockButtons >
+                <apex:commandButton value="First Page" rerender="details" action="{!FirstPage}" disabled="{!prev}"/>
+                <apex:commandButton value="Previous" rerender="details" action="{!previous}" disabled="{!prev}"/>
+                <apex:commandButton value="Next" rerender="details" action="{!next}" disabled="{!nxt}"/>
+                <apex:commandButton value="Last Page" rerender="details" action="{!LastPage}" disabled="{!nxt}"/>
+            </apex:pageblockButtons>
+        </apex:pageBlock>
+    </apex:form>
 </apex:page>
