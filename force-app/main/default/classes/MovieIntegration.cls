@@ -2,15 +2,13 @@ public with sharing class MovieIntegration {
     public String MovieTitle { get; set; }
     public List <Movie> movieList { get; set; }
     
+    private Movie_API_token__mdt apiToken { get; set; }
     private integer totalRecs = 0;
+    private integer pagesCount = 0;
     private integer pageNumber = 1;
-    private integer LimitSize = 10;
+    private integer LimitSize = 20;
 
-    public MovieIntegration(){
-        this.movieList = new List <Movie>();
-    }
-
-    public class Movie{
+    private class Movie {
         public string original_title { get;set; }
         public Decimal vote_average { get;set; }
         public string release_date { get;set; }  
@@ -23,26 +21,43 @@ public with sharing class MovieIntegration {
             this.release_date = release_date;
         }
     }
+
+    public MovieIntegration(){
+        this.movieList = new List <Movie>();
+        this.apiToken = [SELECT Token__c FROM Movie_API_token__mdt LIMIT 1];
+    }
    
-    public void getMovieFromAPI() {
-        Movie_API_token__mdt apiToken = 
-            [SELECT Token__c FROM Movie_API_token__mdt LIMIT 1];
-
-        if(apiToken == null)
-            return;
-
+    private HTTPResponse sendRequest(){
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:MovieDB/search/movie?api_key='+apiToken.Token__c+'&language=en-US&page='+pageNumber+'&query='+title);
+        String encodedTitle = EncodingUtil.urlEncode(this.MovieTitle,'UTF-8');
+
+        req.setEndpoint('callout:MovieDB/search/movie?api_key='+this.apiToken.Token__c+'&language=en-US&page='+pageNumber+'&query='+encodedTitle);
         req.setMethod('GET');
         Http http = new Http();
         HTTPResponse res = http.send(req);
-        
+        return res;
+    }
+
+    private List<Object> parseResponse(){
+        HTTPResponse res = sendRequest();
+
         Map<String, Object> generalResults = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
         
-        List<Object> results =  (List<Object>) generalResults.get('results');
+        totalRecs = (Integer)generalResults.get('total_results');
+        pagesCount = (Integer)generalResults.get('total_pages');
 
-        this.movieList.clear();
+        List<Object> results = (List<Object>) generalResults.get('results');
 
+        return results;
+    }
+   
+    private void getMoviesFromAPI() {
+        if(this.apiToken == null)
+            return;
+
+        List<Object> results = parseResponse();
+
+        this.movieList = new List <Movie>();
         for (Object result : results) {
             Map<String,Object> returnedMovie = (Map<String,Object>) result;
 
@@ -54,58 +69,44 @@ public with sharing class MovieIntegration {
     }
     
     public void findMovie() {
-        totalRecs = 0;
         pageNumber = 1;
-        if (movieList != null && movieList.size() > 0) {
-            movieList = null;
-        }
-        
-        //movieList.clear();
-
         if (MovieTitle != null && MovieTitle != '') {
-            String encodedTitle = EncodingUtil.urlEncode(MovieTitle,'UTF-8');
-            //movieList = getMovieFromAPI(encodedTitle);
-            getMovieFromAPI(encodedTitle, this.pageNumber);
+            getMoviesFromAPI();
         }
     }
 
     public void FirstPage() {
         pageNumber = 1;
-        findMovie();
+        getMoviesFromAPI();
     }
 
     public void previous() {
-        pageNumber = (pageNumber - LimitSize);
-        findMovie();
+        pageNumber = (pageNumber - 1);
+        getMoviesFromAPI();
     }
 
     public void next() {
-        pageNumber = pageNumber + LimitSize;
-        findMovie();
+        pageNumber = pageNumber + 1;
+        getMoviesFromAPI();
     }
 
     public void LastPage() {
-        pageNumber = totalrecs - math.mod(totalRecs, LimitSize);
-        findMovie();
+        pageNumber = pagesCount;
+        getMoviesFromAPI();
     }
 
     public boolean getprev() {
-
         if (pageNumber == 1) {
-
             return true;
         } else {
-
             return false;
         }
     }
 
     public boolean getnxt() {
-        if ((pageNumber + LimitSize) > totalRecs) {
-
+        if ((pageNumber * LimitSize) > totalRecs) {
             return true;
         } else {
-
             return false;
         }
     }
