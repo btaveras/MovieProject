@@ -1,0 +1,11 @@
+<aura:component controller="MovieIntegrationAura" >
+	<!--This component will display page number it is a single count display
+	    iterated over total pages counts currenty it wil show max 5 page number count
+	    with first 4 in sequence and last on as last page number -->
+    <aura:attribute name="pageNumber" type="String"/>
+    <aura:attribute name="currentPageNumber" type="String"/>
+    <aura:attribute name="currnetPagesCount" type="String"/>
+    <aura:registerEvent name="goToPage" type="c:PageChangeEvt"/>
+    <!-- Highlight the current page count -->
+    <lightning:button variant="{!v.pageNumber == v.currentPageNumber ? 'brand' : 'neutral' }" label="{!v.pageNumber}" onclick="{!c.openthePage}" />
+</aura:component>

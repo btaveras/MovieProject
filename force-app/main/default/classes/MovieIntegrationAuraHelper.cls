@@ -1,17 +1,68 @@
 public with sharing class MovieIntegrationAuraHelper {
     private Movie_API_token__mdt apiToken { get; set; }
+    
+    public class PageInfo {
+        @AuraEnabled
+        public Integer currentPageNumber {get;set;}
+        
+        @AuraEnabled
+        public Integer totalPages {get;set;}
+        
+        @AuraEnabled
+        public List<Integer> pageCounter {get;set;}
+
+        public PageInfo(){
+            
+        }
+        
+
+        public PageInfo(Integer totalPages){
+            Integer currentListCount = 5;
+            
+            this.totalPages = totalPages;
+            this.currentPageNumber = 1;
+
+            List<Integer> cnt = new List<Integer>();
+
+            for(Integer loop_var = 0;loop_var < totalPages;loop_var++){
+                cnt.add(loop_var+1);
+                if((loop_var+1) == 4)
+                    break;
+            }
+
+            if(totalPages > 4)
+                cnt.add(totalPages);
+
+            this.pageCounter = cnt;
+        }
+    }
 
     public class Movie {
-        public string original_title { get;set; }
-        public Decimal vote_average { get;set; }
-        public string release_date { get;set; }  
+        public string originalTitle { get;set; }
+        public Decimal voteAverage { get;set; }
+        public string releaseDate { get;set; }  
 
         public Movie(){}
         
-        public Movie(string original_title, Decimal vote_average, string release_date){
-            this.original_title = original_title;
-            this.vote_average = vote_average;
-            this.release_date = release_date;
+        public Movie(string originalTitle, Decimal voteAverage, string releaseDate){
+            this.originalTitle = originalTitle;
+            this.voteAverage = voteAverage;
+            this.releaseDate = releaseDate;
+        }
+    }
+
+    public class MoviesWrapper {
+        public List<Movie> movies { get;set; }
+        public PageInfo pageInfo { get;set; }
+
+        public MoviesWrapper(){
+            this.pageInfo = new PageInfo();
+            this.movies = new List<Movie>();
+        }
+
+        public MoviesWrapper(Integer totalPages, List<Movie> movies){
+            this.pageInfo = new PageInfo(totalPages);
+            this.movies = movies;
         }
     }
 
@@ -30,21 +81,14 @@ public with sharing class MovieIntegrationAuraHelper {
         return res;
     }
 
-    private List<Object> parseResponse(string movieTitleToSearch, Integer pageNumber){
+    private MoviesWrapper parseResponse(string movieTitleToSearch, Integer pageNumber){
         HTTPResponse res = sendRequest(movieTitleToSearch, pageNumber);
 
         Map<String, Object> generalResults = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
        
+        Integer pagesCount = (Integer)generalResults.get('total_pages');
+
         List<Object> results = (List<Object>) generalResults.get('results');
-
-        return results;
-    }
-   
-    public List<Movie> getMoviesFromAPI(string movieTitleToSearch, Integer pageNumber) {
-        if(this.apiToken == null)
-            return new List<Movie>();
-
-        List<Object> results = parseResponse(movieTitleToSearch, pageNumber);
 
         List<Movie> movieList = new List<Movie>();
 
@@ -56,7 +100,19 @@ public with sharing class MovieIntegrationAuraHelper {
             
             movieList.add(mov);
         }
-        return movieList;
+
+        MoviesWrapper wrapper = new MoviesWrapper(pagesCount, movieList);
+
+        return wrapper;
+    }
+   
+    public MoviesWrapper getMoviesFromAPI(string movieTitleToSearch, Integer pageNumber) {
+        if(this.apiToken == null)
+            return new MoviesWrapper();
+
+        MoviesWrapper wrapper = parseResponse(movieTitleToSearch, pageNumber);
+
+        return wrapper;
     }
     
 }

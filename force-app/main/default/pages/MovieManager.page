@@ -13,9 +13,9 @@
         </apex:pageBlock>
         <apex:pageBlock title="Movie Details" id="details">
             <apex:pageBlockTable value="{!movieList}" var="m">
-                <apex:column value="{!m.original_title}" headerValue="Title"/>
-                <apex:column value="{!m.vote_average}" headerValue="Rating"/>
-                <apex:column value="{!m.release_date}" headerValue="Release Date"/>
+                <apex:column value="{!m.originalTitle}" headerValue="Title"/>
+                <apex:column value="{!m.voteAverage}" headerValue="Rating"/>
+                <apex:column value="{!m.releaseDate}" headerValue="Release Date"/>
             </apex:pageBlockTable>
             <apex:pageblockButtons>
                 <apex:commandButton value="First Page" rerender="details" action="{!FirstPage}" disabled="{!prev}"/>

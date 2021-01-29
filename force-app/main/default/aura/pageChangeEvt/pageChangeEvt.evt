@@ -1,0 +1,7 @@
+<aura:event type="APPLICATION" description="Event template" >
+    <!-- Event to handle page change in Pagination app
+         It take page number and current number of records
+         to display as parameters -->
+    <aura:attribute name="pageNumber" type="String"/>
+    <aura:attribute name="currnetPagesCount" type="String"/>
+</aura:event>

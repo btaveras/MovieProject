@@ -9,16 +9,16 @@ public with sharing class MovieIntegration {
     private integer LimitSize = 20;
 
     private class Movie {
-        public string original_title { get;set; }
-        public Decimal vote_average { get;set; }
-        public string release_date { get;set; }  
+        public string originalTitle { get;set; }
+        public Decimal voteAverage { get;set; }
+        public string releaseDate { get;set; }  
 
         public Movie(){}
         
-        public Movie(string original_title, Decimal vote_average, string release_date){
-            this.original_title = original_title;
-            this.vote_average = vote_average;
-            this.release_date = release_date;
+        public Movie(string originalTitle, Decimal voteAverage, string releaseDate){
+            this.originalTitle = originalTitle;
+            this.voteAverage = voteAverage;
+            this.releaseDate = releaseDate;
         }
     }
 

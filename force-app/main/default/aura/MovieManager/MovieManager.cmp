@@ -1,0 +1,65 @@
+<aura:component controller="MovieIntegration" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId">
+    <aura:attribute name="pageNumber" type="String" default="1" />
+    <aura:attribute name="currentPagesCount" type="String" default="5" />
+    <aura:attribute name="movies" type="Object[]" />
+    <aura:attribute name="movieTitle" type="String" />
+    
+    <!-- Handler for the page chage event -->
+    <aura:handler event="c:PageChangeEvt" action="{!c.pageChange}" />
+    
+    <!-- This component will display page number it is a single count display
+         iterated over total pages counts currenty it wil show max 5 page number count
+         with first 4 in sequence and last on as last page number  -->
+    <aura:attribute name="pageNumber1" type="String"/>
+    <aura:attribute name="currentPageNumber" type="String"/>
+    <aura:attribute name="currnetPagesCount" type="String"/>
+    <aura:registerEvent name="goToPage" type="c:PageChangeEvt"/>     
+    <aura:registerEvent name="movieSearchedEvent" type="c:movieSearchedEvt"/>
+    
+
+    <div style="margin: 1rem;padding:1rem;width: 60%;border: 1px solid rgb(217, 219, 221);display: inline-block;border-radius: .25rem;">        
+        <header class="slds-global-header_container">
+            <div class="slds-form--horizontal">
+                <div id="search-container" onkeyup="{!c.searchByEnter}">
+                    <div id="search-div">
+                        <lightning:input placeholder="" class="text-filter" name="searchTxt" value="{!v.movieTitle}" label="Search by Movie Title:"/>
+                    </div>
+                    <div id="search-icon-div">
+                        <lightning:icon class="search-icon" iconName="utility:search" size="x-small"/>
+                    </div>
+                </div>
+            </div> 
+        </header>    
+        
+        <table class="slds-table slds-table--bordered slds-table--cell-buffer" style="margin-top:50px;">
+            <thead>
+                <tr class="slds-text-heading--label">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Title">Title</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Rating">Rating</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Release Date">Release Date</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.movies}" var="mov">
+                    <tr>
+                        <th scope="row">
+                            <div class="slds-truncate" title="Title">{!mov.originalTitle}</div>
+                        </th>
+                        <th scope="row">
+                            <div class="slds-truncate" title="Rating">{!mov.Type}</div>
+                        </th>
+                        <th scope="row">
+                            <div class="slds-truncate" title="Release Date">{!mov.Industry}</div>
+                        </th>
+                    </tr>
+                </aura:iteration>
+            </tbody>        
+        </table>   
+    </div>
+</aura:component>
