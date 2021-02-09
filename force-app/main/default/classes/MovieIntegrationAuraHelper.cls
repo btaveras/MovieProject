@@ -38,8 +38,11 @@ public with sharing class MovieIntegrationAuraHelper {
     }
 
     public class Movie {
+        @AuraEnabled
         public string originalTitle { get;set; }
+        @AuraEnabled
         public Decimal voteAverage { get;set; }
+        @AuraEnabled
         public string releaseDate { get;set; }  
 
         public Movie(){}
@@ -52,7 +55,9 @@ public with sharing class MovieIntegrationAuraHelper {
     }
 
     public class MoviesWrapper {
+        @AuraEnabled
         public List<Movie> movies { get;set; }
+        @AuraEnabled
         public PageInfo pageInfo { get;set; }
 
         public MoviesWrapper(){
@@ -103,15 +108,22 @@ public with sharing class MovieIntegrationAuraHelper {
 
         MoviesWrapper wrapper = new MoviesWrapper(pagesCount, movieList);
 
+
         return wrapper;
     }
    
     public MoviesWrapper getMoviesFromAPI(string movieTitleToSearch, Integer pageNumber) {
+        system.debug('holaaaaaa');
         if(this.apiToken == null)
+        {
+            system.debug('api token null');
+            
             return new MoviesWrapper();
+        }
 
         MoviesWrapper wrapper = parseResponse(movieTitleToSearch, pageNumber);
-
+        system.debug('wrapper');
+        system.debug(wrapper);
         return wrapper;
     }
     

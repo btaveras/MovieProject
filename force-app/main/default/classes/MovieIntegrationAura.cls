@@ -1,12 +1,7 @@
 public with sharing class MovieIntegrationAura {
-    private static MovieIntegrationAuraHelper movieHelper {get;set;} 
-
-    public MovieIntegrationAura(){
-        movieHelper = new MovieIntegrationAuraHelper();
-    }
-
     @AuraEnabled
     public static MovieIntegrationAuraHelper.MoviesWrapper getAllRecords(string movieTitleToSearch, Integer pageNumber) {
+        MovieIntegrationAuraHelper movieHelper = new MovieIntegrationAuraHelper();
         MovieIntegrationAuraHelper.MoviesWrapper wrapper  = new MovieIntegrationAuraHelper.MoviesWrapper();
         if (movieTitleToSearch != null && movieTitleToSearch != '') {
             wrapper = movieHelper.getMoviesFromAPI(movieTitleToSearch, pageNumber);
