@@ -8,7 +8,6 @@
         action.setCallback(this, function(response) {
             var state = response.getState();
             if (component.isValid() && state === "SUCCESS") {
-                console.log(response.getReturnValue());
                 component.set("v.pageCounterInfo", response.getReturnValue());
             }
         });

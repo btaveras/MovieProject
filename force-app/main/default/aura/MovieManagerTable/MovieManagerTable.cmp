@@ -5,14 +5,14 @@
     <aura:attribute name="movieTitle" type="String" />
     <aura:attribute name="tableColumns" type="List"/>
     <!-- Handler for the page chage event -->
-    <aura:handler event="c:pageChangeEvt" action="{!c.pageChange}" />
+    <aura:handler event="c:PageChangeEvt" action="{!c.pageChange}" />
     <aura:handler name="init" value="{! this }" action="{! c.init }"/>
     <!-- This component will display page number it is a single count display
          iterated over total pages counts currenty it wil show max 5 page number count
          with first 4 in sequence and last on as last page number  -->
     <aura:attribute name="currentPageNumber" type="String"/>
     <aura:attribute name="currnetPagesCount" type="String"/>
-    <aura:registerEvent name="goToPage" type="c:pageChangeEvt"/>     
+    <aura:registerEvent name="goToPage" type="c:PageChangeEvt"/>     
     <aura:registerEvent name="movieSearchedEvent" type="c:movieSearchedEvt"/>
     
 

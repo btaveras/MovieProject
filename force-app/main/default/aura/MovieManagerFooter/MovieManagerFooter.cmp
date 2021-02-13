@@ -14,7 +14,7 @@
             <div class="slds-global-header__item">
                 <legend class="slds-form-element__label slds-text-title_caps">{!v.pageCounterInfo.currentPageNumber} of Total {!v.pageCounterInfo.totalPages} Pages</legend>
             </div>
-            <div class="slds-button-group" role="group" style="margin-left:78%;position:fixed;">
+            <div class="slds-button-group" role="group" style="float:right;">
                 <!-- Previous button, it will be disabled if current page is the first page -->
                 <lightning:buttonIcon iconName="utility:left" disabled="{!v.pageCounterInfo.currentPageNumber == 1}" variant="border" alternativeText="Left" iconClass="dark" onclick="{!c.goPreviousPage}" />
                 

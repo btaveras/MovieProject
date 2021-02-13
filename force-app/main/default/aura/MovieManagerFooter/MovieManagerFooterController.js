@@ -14,6 +14,8 @@
     
     // go to next page
     goNextPage : function (component) {
+        console.log('page number from footer');
+        console.log(component.get("v.pageCounterInfo.currentPageNumber"));
         var pageNumber = component.get("v.pageCounterInfo.currentPageNumber");
         var currnetPagesCount = 5;
         
@@ -28,6 +30,7 @@
     // Page count button click and page change
     pageChange: function (component, event, helper) {
         var pageNumber = event.getParam("pageNumber");
+        var currnetPagesCount = event.getParam("currnetPagesCount");
         var totalPages = component.get("v.pageCounterInfo.totalPages");
         helper.resetCounters(component, pageNumber, currnetPagesCount,totalPages);
     },
